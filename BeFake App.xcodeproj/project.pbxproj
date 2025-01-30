@@ -29,6 +29,11 @@
 			path = "BeFake App";
 			sourceTree = "<group>";
 		};
+		8B70A0EE2D4BDB3100ECCCAC /* Fonts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +52,7 @@
 			children = (
 				8B70A0D42D4BD8A700ECCCAC /* BeFake App */,
 				8B70A0D32D4BD8A700ECCCAC /* Products */,
+				8B70A0EE2D4BDB3100ECCCAC /* Fonts */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +81,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				8B70A0D42D4BD8A700ECCCAC /* BeFake App */,
+				8B70A0EE2D4BDB3100ECCCAC /* Fonts */,
 			);
 			name = "BeFake App";
 			packageProductDependencies = (
