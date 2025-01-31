@@ -110,7 +110,7 @@
         <!--Navigation Controller-->
         <scene sceneID="z4k-dt-NRU">
             <objects>
-                <navigationController id="doP-KS-Cnw" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="FeedNavigationController" id="doP-KS-Cnw" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="tc0-rH-ZTT">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -393,7 +393,7 @@
         <!--Navigation Controller-->
         <scene sceneID="mYn-xg-Ubj">
             <objects>
-                <navigationController id="BTd-RZ-hVc" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="LoginNavigationController" id="BTd-RZ-hVc" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="UCt-69-hh8">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
