@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8B61B8FD2D4C695E006F434D /* ParseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8B61B8FC2D4C695E006F434D /* ParseSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		8B70A0D22D4BD8A700ECCCAC /* BeFake App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BeFake App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -41,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B61B8FD2D4C695E006F434D /* ParseSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +90,7 @@
 			);
 			name = "BeFake App";
 			packageProductDependencies = (
+				8B61B8FC2D4C695E006F434D /* ParseSwift */,
 			);
 			productName = "BeFake App";
 			productReference = 8B70A0D22D4BD8A700ECCCAC /* BeFake App.app */;
@@ -114,6 +120,9 @@
 			);
 			mainGroup = 8B70A0C92D4BD8A700ECCCAC;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8B61B8FB2D4C695E006F434D /* XCRemoteSwiftPackageReference "Parse-Swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8B70A0D32D4BD8A700ECCCAC /* Products */;
 			projectDirPath = "";
@@ -342,6 +351,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8B61B8FB2D4C695E006F434D /* XCRemoteSwiftPackageReference "Parse-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/parse-community/Parse-Swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.14.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8B61B8FC2D4C695E006F434D /* ParseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B61B8FB2D4C695E006F434D /* XCRemoteSwiftPackageReference "Parse-Swift" */;
+			productName = ParseSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B70A0CA2D4BD8A700ECCCAC /* Project object */;
 }

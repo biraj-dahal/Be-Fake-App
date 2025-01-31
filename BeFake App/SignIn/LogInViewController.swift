@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ParseSwift
 
 class LogInViewController: UIViewController {
 
@@ -15,6 +16,8 @@ class LogInViewController: UIViewController {
     @IBOutlet weak var logInButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
     
+    @IBAction func didTapLogInButton(_ sender: Any) {
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black

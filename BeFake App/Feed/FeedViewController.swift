@@ -18,6 +18,12 @@ class FeedViewController: UIViewController {
     @IBOutlet weak var postPhotoButton: UIButton!
     @IBOutlet weak var feedTableView: UITableView!
     
+    @IBAction func didTapLogOutButton(_ sender: Any) {
+    }
+    
+    @IBAction func didTapSeeFriendsButton(_ sender: Any) {
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black

@@ -16,6 +16,14 @@ class PostViewController: UIViewController {
     @IBOutlet weak var selectPhotoButton: UIButton!
     
     @IBOutlet weak var postImageView: UIImageView!
+    
+    
+    @IBAction func didTapPostButton(_ sender: Any) {
+    }
+    
+    @IBAction func didTapSelectPhotoButton(_ sender: Any) {
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
