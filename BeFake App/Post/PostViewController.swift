@@ -9,8 +9,16 @@ import UIKit
 
 class PostViewController: UIViewController {
 
+    @IBOutlet weak var postButton: UIBarButtonItem!
+    
+    @IBOutlet weak var captionTextField: UITextField!
+    
+    @IBOutlet weak var selectPhotoButton: UIButton!
+    
+    @IBOutlet weak var postImageView: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
 
         // Do any additional setup after loading the view.
     }

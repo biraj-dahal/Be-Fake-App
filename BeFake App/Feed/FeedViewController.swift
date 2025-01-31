@@ -8,9 +8,19 @@
 import UIKit
 
 class FeedViewController: UIViewController {
-
+    
+    @IBOutlet weak var logoutButton: UIBarButtonItem!
+    
+    @IBOutlet weak var navItemBar: UINavigationItem!
+    
+    @IBOutlet weak var seeFriendsButton: UIBarButtonItem!
+    
+    @IBOutlet weak var postPhotoButton: UIButton!
+    @IBOutlet weak var feedTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
 
         // Do any additional setup after loading the view.
     }

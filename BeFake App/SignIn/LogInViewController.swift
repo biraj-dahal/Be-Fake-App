@@ -9,12 +9,27 @@ import UIKit
 
 class LogInViewController: UIViewController {
 
+    @IBOutlet weak var beRealLabel: UILabel!
+    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var logInButton: UIButton!
+    @IBOutlet weak var signUpButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
+        beRealLabel.textColor = .white
+        
 
         // Do any additional setup after loading the view.
     }
-    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "SignUpSegue" {
+//            guard let destinationVC = segue.destination as? SignUpViewController else { return }
+//            destinationVC.title = "Hello"
+//        }
+//    }
+//    
 
     /*
     // MARK: - Navigation
