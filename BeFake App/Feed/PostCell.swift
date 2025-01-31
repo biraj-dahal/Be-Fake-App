@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import ParseSwift
+import Alamofire
+import AlamofireImage
 
 class PostCell: UITableViewCell {
+
 
     @IBOutlet weak var nameAvatarLabel: UILabel!
     
@@ -18,15 +22,50 @@ class PostCell: UITableViewCell {
     
     @IBOutlet weak var postCaptionLabel: UILabel!
     
+    private var imageDataRequest: DataRequest?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
 
+
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func configure(with post: Post){
+        if let user = post.user {
+            nameLabel.text = user.username
+            nameAvatarLabel.text = user.userInitials
+        }
+        if let imageFile = post.image,
+            let imageURL = imageFile.url {
+            imageDataRequest = AF.request(imageURL).responseImage { [weak self] response in
+                switch response.result {
+                case .success(let image):
+                    self?.postImageView.image = image
+                case .failure(let error):
+                    print("Error downloading image: \(error)")
+                    break
+                }
+                
+            }
+        }
+        postCaptionLabel.text = post.caption
+        locationHoursLabel.text = "Washington DC, 5 hrs ago"
+        
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        postImageView.image = nil
+
+        imageDataRequest?.cancel()
+
     }
 
 }

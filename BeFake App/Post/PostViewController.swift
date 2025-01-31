@@ -60,7 +60,7 @@ class PostViewController: UIViewController{
         config.selectionLimit = 1
         config.filter = .images
         config.preferredAssetRepresentationMode = .current
-        var picker = PHPickerViewController(configuration: config)
+        let picker = PHPickerViewController(configuration: config)
         picker.delegate = self
         present(picker, animated: true)
         
