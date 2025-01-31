@@ -34,6 +34,8 @@ class SignUpViewController: UIViewController {
         newUser.signup { [weak self] result in
             switch result {
             case .success(let user):
+                print("User has been signed up \(user)")
+                newUser.userInitials = self?.extractInitials(from: username)
                 NotificationCenter.default.post(name: Notification.Name("login"), object: nil)
             case .failure(let error):
                 self?.showUnknownErrorAlert(description: error.localizedDescription)
@@ -41,6 +43,17 @@ class SignUpViewController: UIViewController {
         }
         
         
+    }
+    private func extractInitials(from username: String) -> String {
+            let words = username.split(separator: " ")
+            
+            let initials = words.compactMap { $0.first }
+            
+            let firstTwoInitials = initials.prefix(2)
+            
+            let capitalizedInitials = firstTwoInitials.map { String($0).uppercased() }
+            
+            return capitalizedInitials.joined()
     }
     
     override func viewDidLoad() {
