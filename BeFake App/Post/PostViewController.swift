@@ -8,11 +8,12 @@
 import UIKit
 import PhotosUI
 import ParseSwift
+import CoreLocation
 
 class PostViewController: UIViewController{
     
 
-    
+    private var locationManager = CLLocationManager()
     @IBOutlet weak var captionTextField: UITextField!
     
     @IBOutlet weak var postImageView: UIImageView!
@@ -24,6 +25,9 @@ class PostViewController: UIViewController{
         view.backgroundColor = .black
 
         // Do any additional setup after loading the view.
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
     
     @IBAction func didTapPostButton(_ sender: Any) {
@@ -41,6 +45,20 @@ class PostViewController: UIViewController{
         post.image = imageFile
         post.caption = captionTextField.text
         post.user = User.current
+        
+        if let location = locationManager.location {
+            do {
+                let geoPoint = try ParseGeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                post.locationCoordinates = geoPoint
+            } catch {
+    
+                post.locationCoordinates = nil
+                print("Error capturing location: \(error)")
+            }
+        } else {
+            post.locationCoordinates = nil
+        }
+
         
         post.save { [weak self] result in
             DispatchQueue.main.async {
@@ -124,7 +142,7 @@ class PostViewController: UIViewController{
 
 }
 
-extension PostViewController: PHPickerViewControllerDelegate {
+extension PostViewController: PHPickerViewControllerDelegate, CLLocationManagerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
 

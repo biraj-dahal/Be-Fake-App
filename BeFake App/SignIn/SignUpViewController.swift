@@ -42,7 +42,9 @@ class SignUpViewController: UIViewController {
             switch result {
             case .success(let user):
                 print("User has been signed up \(user)")
-                newUser.userInitials = self?.extractInitials(from: username)
+                let userInitials = self?.extractInitials(from: username) ?? ""
+                
+                newUser.userInitials = userInitials
                 NotificationCenter.default.post(name: Notification.Name("login"), object: nil)
             case .failure(let error):
                 print("SignUp Failed")

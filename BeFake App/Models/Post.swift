@@ -7,6 +7,8 @@
 
 import Foundation
 import ParseSwift
+import CoreLocation
+
 
 struct Post: ParseObject{
     var originalData: Data?
@@ -24,6 +26,7 @@ struct Post: ParseObject{
     var image: ParseFile?
     var numHours: Int?
     var location: String?
+    var locationCoordinates: ParseGeoPoint?
     
     
 }

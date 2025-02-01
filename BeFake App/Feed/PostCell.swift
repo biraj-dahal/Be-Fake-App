@@ -24,11 +24,25 @@ class PostCell: UITableViewCell {
     
     private var imageDataRequest: DataRequest?
     
-
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        backgroundColor = .black
+        contentView.backgroundColor = .black
+        nameAvatarLabel.layer.cornerRadius = nameAvatarLabel.frame.size.width / 2
+        nameAvatarLabel.layer.masksToBounds = true
+        
+        nameAvatarLabel.textColor = .white
+        nameLabel.textColor = .white
+        locationHoursLabel.textColor = .white
+        postCaptionLabel.textColor = .white
+    }
     func configure(with post: Post){
         if let user = post.user {
             nameLabel.text = user.username
-            nameAvatarLabel.text = user.userInitials
+            nameAvatarLabel.text = self.extractInitials(from: user.username ?? "")
+            //user.userInitials
         }
         if let imageFile = post.image,
             let imageURL = imageFile.url {
@@ -44,8 +58,31 @@ class PostCell: UITableViewCell {
             }
         }
         postCaptionLabel.text = post.caption
-        locationHoursLabel.text = "Washington DC, 5 hrs ago"
+        let locationText = post.location ?? "Unknown Location"
+        let timeText = calculateTimeSincePost(post.createdAt)
+        locationHoursLabel.text = "\(locationText), \(timeText)"
         
+    }
+    private func calculateTimeSincePost(_ date: Date?) -> String {
+        guard let postDate = date else { return "Unknown time" }
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour], from: postDate, to: Date())
+        if let hours = components.hour {
+            return "\(hours) hrs ago"
+        }
+        return "Just now"
+    }
+    private func extractInitials(from username: String) -> String {
+            let words = username.split(separator: " ")
+            
+            let initials = words.compactMap { $0.first }
+            
+            let firstTwoInitials = initials.prefix(2)
+            
+            let capitalizedInitials = firstTwoInitials.map { String($0).uppercased() }
+            
+            return capitalizedInitials.joined()
     }
     
     override func prepareForReuse() {

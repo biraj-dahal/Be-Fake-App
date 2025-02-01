@@ -23,6 +23,8 @@ class FeedViewController: UIViewController {
         }
     }
     
+    private let refreshControl = UIRefreshControl()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -30,17 +32,35 @@ class FeedViewController: UIViewController {
         feedTableView.delegate = self
         feedTableView.dataSource = self
         feedTableView.allowsSelection = false
+        setupRefreshControl()
 
+    }
+    private func setupRefreshControl() {
+        if #available(iOS 10.0, *) {
+            feedTableView.refreshControl = refreshControl
+        } else {
+            feedTableView.addSubview(refreshControl)
+        }
+        refreshControl.tintColor = .white
+        refreshControl.addTarget(self, action: #selector(refreshFeed), for: .valueChanged)
+    }
+
+    @objc private func refreshFeed() {
+        queryPosts()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         queryPosts()
+        
     }
     
     private func queryPosts() {
         let query = Post.query().include("user").order([.descending("createdAt")])
         query.find { [weak self] result in
+            DispatchQueue.main.async {
+                            self?.refreshControl.endRefreshing() // Step 4: Stop refreshing
+                        }
             switch result{
             case .success(let posts):
                 self?.posts = posts
