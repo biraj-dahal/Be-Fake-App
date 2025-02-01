@@ -58,7 +58,7 @@ class PostCell: UITableViewCell {
             }
         }
         postCaptionLabel.text = post.caption
-        let locationText = post.location ?? "Unknown Location"
+        let locationText = post.location ?? "Washington, D.C."
         let timeText = calculateTimeSincePost(post.createdAt)
         locationHoursLabel.text = "\(locationText), \(timeText)"
         
