@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import ParseSwift
 
 
@@ -26,6 +27,6 @@ struct User: ParseUser{
     var email: String?
     var password: String?
     var emailVerified: Bool?
-    var authData: [String: [String: String]?]?
+    var authData: [String : [String : String]?]?
     
 }

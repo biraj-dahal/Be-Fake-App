@@ -39,7 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func login() {
         let storyboard = UIStoryboard(name: Constants.storyboardIdentifier, bundle: nil)
-        self.window?.rootViewController = storyboard.instantiateViewController(withIdentifier: Constants.loginNavigationControllerIdentifier)
+        self.window?.rootViewController = storyboard.instantiateViewController(withIdentifier: Constants.feedNavigationControllerIdentifier)
     }
     
     private func logout() {
@@ -86,7 +86,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
 

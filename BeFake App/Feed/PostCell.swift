@@ -24,18 +24,7 @@ class PostCell: UITableViewCell {
     
     private var imageDataRequest: DataRequest?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
 
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
     func configure(with post: Post){
         if let user = post.user {
             nameLabel.text = user.username

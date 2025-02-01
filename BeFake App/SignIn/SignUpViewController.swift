@@ -12,9 +12,16 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var usernameLabel: UITextField!
     @IBOutlet weak var emailLabel: UITextField!
     @IBOutlet weak var passwordLabel: UITextField!
-    @IBOutlet weak var signUpButton: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+        // Do any additional setup after loading the view.
+        
+    }
     
     @IBAction func didTapSignUpButton(_ sender: Any) {
+        
         guard let username = usernameLabel.text,
                 let email = emailLabel.text,
                 let password = passwordLabel.text,
@@ -38,6 +45,7 @@ class SignUpViewController: UIViewController {
                 newUser.userInitials = self?.extractInitials(from: username)
                 NotificationCenter.default.post(name: Notification.Name("login"), object: nil)
             case .failure(let error):
+                print("SignUp Failed")
                 self?.showUnknownErrorAlert(description: error.localizedDescription)
             }
         }
@@ -56,15 +64,10 @@ class SignUpViewController: UIViewController {
             return capitalizedInitials.joined()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .black
-        // Do any additional setup after loading the view.
-        
-    }
+
     
     private func showUnknownErrorAlert(description: String?) {
-        let alertController = UIAlertController(title: "Unable to Sign Up", message: description ?? "An unknown error occurred.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Unable to Sign Up", message: "Account already exists with this username. Use a different username.", preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .default)
         alertController.addAction(alertAction)
         present(alertController, animated: true)

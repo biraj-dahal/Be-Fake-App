@@ -13,8 +13,15 @@ class LogInViewController: UIViewController {
     @IBOutlet weak var beRealLabel: UILabel!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var logInButton: UIButton!
-    @IBOutlet weak var signUpButton: UIButton!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+        beRealLabel.textColor = .white
+        
+
+        // Do any additional setup after loading the view.
+    }
     
     @IBAction func didTapLogInButton(_ sender: Any) {
         
@@ -38,17 +45,10 @@ class LogInViewController: UIViewController {
         }
         
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .black
-        beRealLabel.textColor = .white
-        
 
-        // Do any additional setup after loading the view.
-    }
     
     private func showUnknownErrorAlert(description: String?) {
-        let alertController = UIAlertController(title: "Unable to Log in", message: description ?? "An unknown error occurred.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Unable to Log in", message: "LogIn Credentials are incorrect.", preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .default)
         alertController.addAction(alertAction)
         present(alertController, animated: true)

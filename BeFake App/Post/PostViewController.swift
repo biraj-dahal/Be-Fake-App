@@ -12,16 +12,19 @@ import ParseSwift
 class PostViewController: UIViewController{
     
 
-    @IBOutlet weak var postButton: UIBarButtonItem!
     
     @IBOutlet weak var captionTextField: UITextField!
-    
-    @IBOutlet weak var selectPhotoButton: UIButton!
     
     @IBOutlet weak var postImageView: UIImageView!
     
     private var imagePicked: UIImage?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+
+        // Do any additional setup after loading the view.
+    }
     
     @IBAction func didTapPostButton(_ sender: Any) {
         view.endEditing(true)
@@ -32,7 +35,7 @@ class PostViewController: UIViewController{
             return
         }
         
-        let imageFile = ParseFile(name: "image.jpg", data: imageData)
+        let imageFile = ParseFile(name: "image1.jpg", data: imageData)
         
         var post = Post()
         post.image = imageFile
@@ -55,24 +58,41 @@ class PostViewController: UIViewController{
     }
     
     @IBAction func didTapSelectPhotoButton(_ sender: Any) {
+        if PHPhotoLibrary.authorizationStatus(for: .readWrite) != .authorized {
+            PHPhotoLibrary.requestAuthorization { [weak self ] status in
+                switch status {
+                case .authorized:
+                    DispatchQueue.main.async {
+                        self?.presentPhotoPicker()
+                    }
+                default:
+                    self?.presentGoToSettingsAlert()
+                }
+            }
+        }
+        else{
+            presentPhotoPicker()
+        }
         
+        
+        
+    }
+    private func presentGoToSettingsAlert() {
+        let alert = UIAlertController(title: "Photos Access Required", message: "Please go to Settings > Privacy > Photos to allow this app to access your photos.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    private func presentPhotoPicker() {
         var config = PHPickerConfiguration()
         config.selectionLimit = 1
         config.filter = .images
-        config.preferredAssetRepresentationMode = .current
+        config.preferredAssetRepresentationMode = .compatible
         let picker = PHPickerViewController(configuration: config)
         picker.delegate = self
         present(picker, animated: true)
-        
-        
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .black
 
-        // Do any additional setup after loading the view.
-    }
     private func showUnknownErrorAlert(description: String?) {
         let alertController = UIAlertController(title: "Unable to Sign Up", message: description ?? "An unknown error occurred.", preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .default)
@@ -107,31 +127,47 @@ class PostViewController: UIViewController{
 extension PostViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
-        
+
         guard let provider = results.first?.itemProvider,
               provider.canLoadObject(ofClass: UIImage.self) else {
-                return
+            print("Got Error 1: Cannot load image from picker.")
+            self.showUnknownErrorAlert(description: "Failed to load image. Try again.")
+            return
         }
-        
+
         provider.loadObject(ofClass: UIImage.self) { [weak self] obj, error in
-            guard let image = obj as? UIImage? else {
-                self?.showUnknownErrorAlert(description: error?.localizedDescription)
+            // First, check if there's an error
+            if let error = error {
+                print("Got Error 2: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self?.showUnknownErrorAlert(description: error.localizedDescription)
+                }
                 return
             }
-            
-        if let error = error {
-                self?.showUnknownErrorAlert(description: error.localizedDescription)
-            return
-            }else {
+
+            // Ensure the object is a UIImage
+            guard let image = obj as? UIImage else {
+                print("Got Error 3: Failed to convert object to UIImage.")
                 DispatchQueue.main.async {
-                    self?.postImageView.image = image
-                    self?.imagePicked = image
+                    self?.showUnknownErrorAlert(description: "Selected file is not an image.")
                 }
-        }
-            
-            
+                return
+            }
+
+            // Convert image to data and back to avoid loading issues
+            if let imageData = image.jpegData(compressionQuality: 1.0),
+               let processedImage = UIImage(data: imageData) {
+                DispatchQueue.main.async {
+                    print("Image successfully selected and processed.")
+                    self?.postImageView.image = processedImage
+                    self?.imagePicked = processedImage
+                }
+            } else {
+                print("Got Error 4: Could not process image.")
+                DispatchQueue.main.async {
+                    self?.showUnknownErrorAlert(description: "Could not process selected image.")
+                }
+            }
         }
     }
-    
-    
 }

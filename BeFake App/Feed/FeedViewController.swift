@@ -11,13 +11,10 @@ import PhotosUI
 
 class FeedViewController: UIViewController {
     
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
     
-    @IBOutlet weak var navItemBar: UINavigationItem!
     
     @IBOutlet weak var seeFriendsButton: UIBarButtonItem!
     
-    @IBOutlet weak var postPhotoButton: UIButton!
     @IBOutlet weak var feedTableView: UITableView!
     
     private  var posts: [Post] = [] {
@@ -26,7 +23,17 @@ class FeedViewController: UIViewController {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+        feedTableView.backgroundColor = .black
+        feedTableView.delegate = self
+        feedTableView.dataSource = self
+        feedTableView.allowsSelection = false
+
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         queryPosts()
     }
@@ -45,6 +52,7 @@ class FeedViewController: UIViewController {
         }
     
     @IBAction func didTapLogOutButton(_ sender: Any) {
+        print("Log out Button Pressed.")
         showConfirmLogoutAlert()
     }
     
@@ -63,14 +71,7 @@ class FeedViewController: UIViewController {
         print("Did Tap See Friends Button will be configured later")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .black
-        feedTableView.delegate = self
-        feedTableView.dataSource = self
-        feedTableView.allowsSelection = false
 
-    }
     private func showUnknownErrorAlert(description: String?) {
         let alertController = UIAlertController(title: "Unable to Sign Up", message: description ?? "An unknown error occurred.", preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .default)

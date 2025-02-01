@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleIdentifier</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need this to post pictures on BeFake App</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Need to save the pictures in the app</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
