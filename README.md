@@ -1,44 +1,38 @@
-# Project 2 - BeFake App.
+# Project 3 - *Be Fake App*
 
-Submitted by: Biraj Dahal
+Submitted by: **Biraj Dahal**
 
-BeFake, is an app that allows multiple users to upload pictures when a notification shows up 
+**BeFake App** is an app that clones Be Real app, but you post a fake life image.
 
-Time spent: 12 hours spent in total
+Time spent: **10** hours spent in total
 
 ## Required Features
 
 The following **required** functionality is completed:
 
-- [x] Users see an app icon in the home screen and a styled launch screen.
-- [x] User can register a new account
-- [x] User can log in with newly created account
-- [x] App has a feed of posts when user logs in
-- [x] User can upload a new post which takes in a picture from photo library and an optional caption	
-- [x] User is able to logout	
+- [x] User can launch camera to take photo instead of photo library
+  - [x] Users without iPhones to demo this feature can manually add unique photos to their simulator's Photos app
+- [x] Users are not able to see other users’ photos until they upload their own.
+- [x] Users can intereact with posts via comments, comments will have user data such as username and name
+- [x] Posts have a time and location attached to them
+- [x] Users are not able to see other photos until they post their own (within 24 hours)	
  
 The following **optional** features are implemented:
 
-- [x] Users can pull to refresh their feed and see a loading indicator -> Working fine
-- [x] Users can infinite-scroll in their feed to see past the 10 most recent photos. -> There is a limit of 10 paginzation size, when 10 pictures are scrolled, the query is made again to extend the feed to 10 more posts.
-- [x] Users can see location and time of photo upload in the feed. -> Location of where the post and time the post was uploaded can be seen.
-- [x] User stays logged in when app is closed and open again	-> Data persistence is seen in the picture.
-
+- [x] User receive notifcation when it is time to post
 
 The following **additional** features are implemented:
 
-- [x] List anything else that you can get done to improve the app functionality! -> I have kept a see friends list button is is partially functional.
+- [ ] List anything else that you can get done to improve the app functionality!
 
 ## Video Walkthrough
 
-![SimulatorScreenRecording-iPhone16-2025-02-01at15 46 41-ezgif com-optimize](https://github.com/user-attachments/assets/727cdde9-a78d-4282-9f67-e26150fd8dbe)
-
+![Simulator Screen Recording - iPhone 16 - 2025-02-10 at 00 51 20](https://github.com/user-attachments/assets/e44ade58-75b7-480b-ae53-2fe0de8f44da)
 
 
 ## Notes
 
 Describe any challenges encountered while building the app.
-Managing the contraints was difficult when there are multiple views, and controls in a single controller.
 
 ## License
 
