@@ -27,6 +27,6 @@ struct Post: ParseObject{
     var numHours: Int?
     var location: String?
     var locationCoordinates: ParseGeoPoint?
-    
+    var comments: [Comment]?
     
 }

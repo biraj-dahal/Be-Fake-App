@@ -11,8 +11,12 @@ import Alamofire
 import AlamofireImage
 
 class PostCell: UITableViewCell {
+    weak var delegate: PostCellDelegate?
 
-
+    @IBOutlet weak var commentTextField: UITextField!
+    
+    @IBOutlet weak var submitCommentButton: UIButton!
+    @IBOutlet weak var commentsLabel: UILabel!
     @IBOutlet weak var nameAvatarLabel: UILabel!
     
     @IBOutlet weak var nameLabel: UILabel!
@@ -24,6 +28,7 @@ class PostCell: UITableViewCell {
     
     private var imageDataRequest: DataRequest?
     
+    @IBOutlet weak var blurView: UIVisualEffectView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -37,12 +42,19 @@ class PostCell: UITableViewCell {
         nameLabel.textColor = .white
         locationHoursLabel.textColor = .white
         postCaptionLabel.textColor = .white
+        commentsLabel.textColor = .white
     }
+    
+    @IBAction func submitCommentTapped(_ sender: Any) {
+        guard let commentText = commentTextField.text, !commentText.isEmpty else { return }
+            delegate?.postCell(self, didSubmitComment: commentText)
+            commentTextField.text = ""
+    }
+    
     func configure(with post: Post){
         if let user = post.user {
             nameLabel.text = user.username
             nameAvatarLabel.text = self.extractInitials(from: user.username ?? "")
-            //user.userInitials
         }
         if let imageFile = post.image,
             let imageURL = imageFile.url {
@@ -59,10 +71,33 @@ class PostCell: UITableViewCell {
         }
         postCaptionLabel.text = post.caption
         let locationText = post.location ?? "Washington, D.C."
-        let timeText = calculateTimeSincePost(post.createdAt)
-        locationHoursLabel.text = "\(locationText), \(timeText)"
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        locationHoursLabel.text = "\(locationText), \(formatter.string(from: post.createdAt!))"
         
+        if let currentUser = User.current,
+
+           let lastPostedDate = currentUser.lastAdded,
+
+           let postCreatedDate = post.createdAt,
+
+
+           let diffHours = Calendar.current.dateComponents([.hour], from: postCreatedDate, to: lastPostedDate).hour {
+
+            blurView.isHidden = abs(diffHours) < 24
+        } else {
+
+            blurView.isHidden = false
+        }
+        
+        if let comments = post.comments, !comments.isEmpty {
+            let commentTexts = comments.compactMap { "\($0.user?.username ?? "Anonymous"): \($0.content ?? "")" }
+            commentsLabel.text = commentTexts.joined(separator: "\n")
+        } else {
+            commentsLabel.text = "No comments yet."
+        }
     }
+    
     private func calculateTimeSincePost(_ date: Date?) -> String {
         guard let postDate = date else { return "Unknown time" }
         
@@ -93,5 +128,14 @@ class PostCell: UITableViewCell {
         imageDataRequest?.cancel()
 
     }
+    
+    func handleCommentSubmission(text: String) {
+            delegate?.postCell(self, didSubmitComment: text)
+        }
 
 }
+
+protocol PostCellDelegate: AnyObject {
+    func postCell(_ cell: PostCell, didSubmitComment commentText: String)
+}
+

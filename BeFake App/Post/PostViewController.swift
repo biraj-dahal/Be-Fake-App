@@ -30,6 +30,23 @@ class PostViewController: UIViewController{
         locationManager.startUpdatingLocation()
     }
     
+    @IBAction func didTapOpenCamera(_ sender: Any) {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            return
+        }
+
+        let imagePicker = UIImagePickerController()
+
+        imagePicker.sourceType = .camera
+
+
+        imagePicker.allowsEditing = true
+
+        imagePicker.delegate = self
+
+        present(imagePicker, animated: true)
+    }
+    
     @IBAction func didTapPostButton(_ sender: Any) {
         view.endEditing(true)
         
@@ -65,7 +82,26 @@ class PostViewController: UIViewController{
                 switch result {
                 case .success(let savedPost):
                     print("Saved post successfuly: \(savedPost)")
-                    self?.navigationController?.popViewController(animated: true)
+                    
+                    if var currentUser = User.current {
+
+                        currentUser.lastAdded = Date()
+
+                        currentUser.save { [weak self] result in
+                            switch result {
+                            case .success:
+
+                                DispatchQueue.main.async {
+        
+                                    self?.navigationController?.popViewController(animated: true)
+                                }
+
+                            case .failure(let error):
+                                self?.showUnknownErrorAlert(description: error.localizedDescription)
+                            }
+                        }
+                    }
+        
                 case .failure(let error):
                     self?.showUnknownErrorAlert(description: error.localizedDescription)
                 
@@ -142,7 +178,22 @@ class PostViewController: UIViewController{
 
 }
 
-extension PostViewController: PHPickerViewControllerDelegate, CLLocationManagerDelegate {
+extension PostViewController: PHPickerViewControllerDelegate, CLLocationManagerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true)
+
+        guard let image = info[.editedImage] as? UIImage else {
+            return
+        }
+
+        postImageView.image = image
+
+        imagePicked = image
+       
+    }
+    
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
 

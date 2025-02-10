@@ -8,6 +8,7 @@
 import UIKit
 import ParseSwift
 import PhotosUI
+import UserNotifications
 
 class FeedViewController: UIViewController {
     
@@ -26,6 +27,7 @@ class FeedViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     private var activityIndicator: UIActivityIndicatorView!
 
+    let notificationCenter = UNUserNotificationCenter.current()
     
     // Pagination
     private var isLoadingMorePosts = false
@@ -40,6 +42,15 @@ class FeedViewController: UIViewController {
         feedTableView.dataSource = self
         feedTableView.allowsSelection = false
         setupRefreshControl()
+        
+        notificationCenter.requestAuthorization(options: [.alert, .sound]){ (permissionGranted, error) in
+            if(!permissionGranted){
+                print("Permission Denied")
+            }
+        }
+        
+        
+
         
         
         // Initialize the activity indicator
@@ -68,7 +79,33 @@ class FeedViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         queryPosts()
+        scheduleNotification()
         
+    }
+    private func scheduleNotification(){
+        notificationCenter.getNotificationSettings { settings in
+                guard settings.authorizationStatus == .authorized else {
+                    print("Notifications are not authorized.")
+                    return
+                }
+                
+                let content = UNMutableNotificationContent()
+                content.title = "Time for BeFake Picture"
+                content.body = "It's your time of the day to fake a picture."
+                
+                var dateComponents = DateComponents()
+                dateComponents.hour = 23
+                dateComponents.minute = 30
+                
+                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+                let request = UNNotificationRequest(identifier: "BeFakePicture", content: content, trigger: trigger)
+
+                self.notificationCenter.add(request) { error in
+                    if let error = error {
+                        print("Error scheduling notification: \(error.localizedDescription)")
+                    }
+                }
+            }
     }
     
     private func queryPosts(refreshing: Bool = false) {
@@ -78,7 +115,9 @@ class FeedViewController: UIViewController {
         
         isLoadingMorePosts = true
         
-        let query = Post.query().include("user").order([.descending("createdAt")]).limit(postsPerPage).skip(currentPage * postsPerPage)
+        let yesterdayDate = Calendar.current.date(byAdding: .day, value: (-1), to: Date())!
+        
+        let query = Post.query().include("user").order([.descending("createdAt")]).limit(postsPerPage).skip(currentPage * postsPerPage).where("createdAt" >= yesterdayDate)
         
         query.find { [weak self] result in
             DispatchQueue.main.async {
@@ -149,7 +188,28 @@ class FeedViewController: UIViewController {
 
 }
 
-extension FeedViewController: UITableViewDelegate, UITableViewDataSource {
+extension FeedViewController: UITableViewDelegate, UITableViewDataSource, PostCellDelegate {
+    
+    func postCell(_ cell: PostCell, didSubmitComment commentText: String) {
+        guard let indexPath = feedTableView.indexPath(for: cell) else { return }
+        var post = posts[indexPath.row]
+
+        let newComment = Comment(post: post, user: User.current, content: commentText)
+        
+        newComment.save { result in
+            switch result {
+            case .success(let savedComment):
+                DispatchQueue.main.async {
+                    // Append new comment to post and refresh the cell
+                    post.comments?.append(savedComment)
+                    self.feedTableView.reloadRows(at: [indexPath], with: .automatic)
+                }
+            case .failure(let error):
+                print("Error saving comment: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return posts.count
     }
@@ -158,10 +218,12 @@ extension FeedViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PostCellReuse", for: indexPath) as? PostCell else {
             return UITableViewCell()
         }
-        cell.configure(with: posts[indexPath.row])
+        let post = posts[indexPath.row]
+        cell.configure(with: post)
+        cell.delegate = self
         return cell
-        
     }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
             let contentHeight = scrollView.contentSize.height
             let offset = scrollView.contentOffset.y
