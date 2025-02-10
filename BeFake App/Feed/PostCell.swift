@@ -48,7 +48,6 @@ class PostCell: UITableViewCell {
     @IBAction func submitCommentTapped(_ sender: Any) {
         guard let commentText = commentTextField.text, !commentText.isEmpty else { return }
             delegate?.postCell(self, didSubmitComment: commentText)
-            commentTextField.text = ""
     }
     
     func configure(with post: Post){

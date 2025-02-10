@@ -48,7 +48,7 @@ class SignUpViewController: UIViewController {
                 NotificationCenter.default.post(name: Notification.Name("login"), object: nil)
             case .failure(let error):
                 print("SignUp Failed")
-                self?.showUnknownErrorAlert(description: error.localizedDescription)
+            
             }
         }
         

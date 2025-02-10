@@ -94,8 +94,8 @@ class FeedViewController: UIViewController {
                 content.body = "It's your time of the day to fake a picture."
                 
                 var dateComponents = DateComponents()
-                dateComponents.hour = 23
-                dateComponents.minute = 30
+                dateComponents.hour = 00
+                dateComponents.minute = 12
                 
                 let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
                 let request = UNNotificationRequest(identifier: "BeFakePicture", content: content, trigger: trigger)
@@ -117,7 +117,7 @@ class FeedViewController: UIViewController {
         
         let yesterdayDate = Calendar.current.date(byAdding: .day, value: (-1), to: Date())!
         
-        let query = Post.query().include("user").order([.descending("createdAt")]).limit(postsPerPage).skip(currentPage * postsPerPage).where("createdAt" >= yesterdayDate)
+        let query = Post.query().include("user").include("comments").include("comments.user").order([.descending("createdAt")]).limit(postsPerPage).skip(currentPage * postsPerPage).where("createdAt" >= yesterdayDate)
         
         query.find { [weak self] result in
             DispatchQueue.main.async {
@@ -134,7 +134,8 @@ class FeedViewController: UIViewController {
                                 self?.currentPage += 1
                 
             case .failure(let error):
-                self?.showUnknownErrorAlert(description: error.localizedDescription)
+                print("Error")
+//                self?.showUnknownErrorAlert(description: error.localizedDescription)
             }
             self?.isLoadingMorePosts = false
             }
@@ -191,24 +192,42 @@ class FeedViewController: UIViewController {
 extension FeedViewController: UITableViewDelegate, UITableViewDataSource, PostCellDelegate {
     
     func postCell(_ cell: PostCell, didSubmitComment commentText: String) {
-        guard let indexPath = feedTableView.indexPath(for: cell) else { return }
-        var post = posts[indexPath.row]
+            guard let indexPath = feedTableView.indexPath(for: cell) else { return }
+            var post = posts[indexPath.row]
 
-        let newComment = Comment(post: post, user: User.current, content: commentText)
-        
-        newComment.save { result in
-            switch result {
-            case .success(let savedComment):
-                DispatchQueue.main.async {
-                    // Append new comment to post and refresh the cell
+            let newComment = Comment(post: post, user: User.current, content: commentText)
+            
+            newComment.save { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let savedComment):
+                    if post.comments == nil {
+                        post.comments = []
+                    }
+                    
                     post.comments?.append(savedComment)
-                    self.feedTableView.reloadRows(at: [indexPath], with: .automatic)
+                    
+                    self.posts[indexPath.row] = post
+                    
+                    post.save { result in
+                        switch result {
+                        case .success(let updatedPost):
+                            DispatchQueue.main.async {
+
+                                self.posts[indexPath.row] = updatedPost
+                                self.feedTableView.reloadRows(at: [indexPath], with: .automatic)
+                            }
+                        case .failure(let error):
+                            print("Error updating post: \(error.localizedDescription)")
+                        }
+                    }
+                    
+                case .failure(let error):
+                    print("Error saving comment: \(error.localizedDescription)")
                 }
-            case .failure(let error):
-                print("Error saving comment: \(error.localizedDescription)")
             }
         }
-    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return posts.count
